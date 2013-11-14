@@ -1,7 +1,7 @@
 1)build
-tar czf artisan-0.1.0.tar.gz artisan
-cp artisan-0.1.0.tar.gz /root/rpmbuild/SOURCES
-rpmbuild -ba /root/rpmbuild/SPEC/artisan.spec
+tar czf mstore-0.1.0.tar.gz mstore
+cp mstore-0.1.0.tar.gz /root/rpmbuild/SOURCES
+rpmbuild -ba /root/rpmbuild/SPEC/mstore.spec
 
 2)start
-service artisan start
+service mstore start
