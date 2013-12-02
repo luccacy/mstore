@@ -10,17 +10,35 @@ from mstore.db.sqlalchemy import store
 
 IMPL = api
 
-def sensor_get_all():
-    return IMPL.sensor_get_all()
+def account_create(values, session=None):
+    return IMPL.account_create(values, session)
 
-def sensor_get_by_id(sensor_id):
-    return IMPL.sensor_get_by_id(sensor_id)
+def account_get_by_id(id, session=None):
+    return IMPL.account_get_by_id(id, session)
 
-def cyclesetting_get_cycle(id=1):
-    return IMPL.cyclesetting_get_cycle(id)
+def account_delete_by_id(id, session=None):
+    return IMPL.account_delete_by_id(id, session)
 
-def store_to_db(batterys_id, sensor_n, sensor_id, user_id, values, status):
-    return store.store_to_db(batterys_id, sensor_n, sensor_id, user_id, values, status)
+def container_create(values, session=None):
+    return IMPL.container_create(values, session)
 
-def delete_records_over_one_week_day():
-    return store.delete_records_over_one_week_day()
+def container_get_by_id(id, session=None):
+    return IMPL.container_get_by_id(id, session)
+
+def container_get_by_name(name, session=None):
+    return IMPL.container_get_by_name(name, session)
+
+def container_delete_by_name(name, session=None):
+    return IMPL.container_delete_by_name(name, session)
+
+def object_create(values, session=None):
+    return IMPL.object_create(values, session)
+
+def object_get_by_name(name, session=None):
+    return IMPL.object_get_by_name(name, session)
+
+def object_get_by_container_id(container_id, session=None):
+    return IMPL.object_get_by_container_id(container_id, session)
+
+def object_delete_by_container_id(container_id, session=None):
+    return IMPL.object_delete_by_container_id(container_id, session)

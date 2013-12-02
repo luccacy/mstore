@@ -79,144 +79,33 @@ class DbBase(object):
         local.update(joined)
         return local.iteritems()
     
-class Sensor(BASE, DbBase):
+class Account(BASE, DbBase):
     
-    __tablename__ = 'tbl_sensors'
+    __tablename__ = 'tbl_accounts'
     
-    RECORD_ID = Column(Integer, primary_key=True)
-    SENSORNAME_V = Column(String(255))
-    GROUPNAME_V = Column(String(255))
-    BASENAME_V = Column(String(255))
-    PROVINCENAME_V = Column(String(255))
-    CITYNAME_V = Column(String(255))
-    COUNTRYNAME_V = Column(String(255))
-    SENSOR_SETUP_NAME_V = Column(String(255))
-    SENSOR_N = Column(Integer)
-    BATTERYNUM_N = Column(Integer)
-    SENSOR_ADDR_N = Column(Integer)
-    COM_N = Column(Integer)
-    IP_V = Column(String(255))
-    SETUP_D = Column(DateTime)
-    REMARK_V = Column(String(255))
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255))
+    password = Column(String(255))
+    telephone = Column(String(255))
+    address = Column(String(255))
+    company = Column(String(255))
+    create_time = Column(DateTime)
     
-class Pickdata(BASE, DbBase):
+class Container(BASE, DbBase):
     
-    __tablename__ = 'tbl_pickdata'
+    __tablename__ = 'tbl_containers'
     
-    RECORD_ID = Column(Integer, primary_key=True)
-    USER_ID = Column(Integer, primary_key=True)
-    BTKEY_V = Column(String(255))
-    BASENAME_V = Column(String(255))
-    SENSORNAME_V = Column(String(255))
-    SENSOR_SETUP_NAME_V = Column(String(255))
-    SENSOR_N = Column(Integer)
-    BATTERY_N = Column(Integer)
-    PICKEDTIME_D = Column(DateTime)
-    VOL_N = Column(Float)
-    ELEC_N = Column(Float)
-    INTER_N = Column(Float)
-    HINTER_N = Column(Float)
-    TEMPER_N = Column(Float)
-    STATUS_V = Column(String(255))
-    REMARK_V = Column(String(255))
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255))
+    account_id = Column(Integer)
+    create_time = Column(DateTime)
     
-class Warning(BASE, DbBase):
+class Object(BASE, DbBase):
     
-    __tablename__ = 'mtsys_basetype'
+    __tablename__ = 'tbl_objects'
     
-    RECORD_ID = Column(Integer, primary_key=True)
-    BASE_TYPE = Column(String(255))
-    YELTHRMAXRED_N = Column(Integer)
-    YELTHRMAXYEL_N = Column(Integer)
-    GRETHRMAXRED_N = Column(Integer)
-    GRETHRMAXYEL_N = Column(Integer)
-    REMARK = Column(String(255))
-    CREATE_DATE = Column(DateTime)
-    
-class Battery(BASE, DbBase):
-    
-    __tablename__ = 'bt_battery'
-    
-    RECORD_ID = Column(Integer, primary_key=True)
-    BASE_N = Column(Integer)
-    GROUP_V = Column(String(255))
-    SERIAL_N = Column(Integer)
-    BATTERYTYPE_V = Column(Integer)
-    CURDATE_D = Column(DateTime)
-    STATUS_N = Column(Integer)
-    CURVAL_N = Column(Float)
-    CURINNER_N = Column(Float)
-    CUR_ELECTRIC_N = Column(Float)
-    CUR_HL_INNER_N = Column(Float)
-    CUR_TEMPERATURE_N = Column(Integer)
-    FORCASTVOLUME_N = Column(Float)
-    TESTVOLUME_N = Column(Float)
-    POWERSUPPLY_N = Column(Float)
-    BACKLOAD_N = Column(Float)
-    REMARK_V = Column(String(255))
-    
-class Batterys(BASE, DbBase):
-    
-    __tablename__ = 'bt_batterys'
-    
-    RECORD_ID = Column(String(255), primary_key=True)
-    BASE_TYPE = Column(Integer)
-    BASE_N = Column(Integer)
-    GROUPNAME_V = Column(String(255))
-    BATTERYTYPE_V = Column(Integer)
-    BATTERYNUM_N = Column(Integer)
-    SETUP_D = Column(DateTime)
-    CUR_DATE = Column(DateTime)
-    DEVICE_V = Column(String(255))
-    IP_V = Column(String(255))
-    PORT_N = Column(Integer)
-    ADDR_N = Column(Integer)
-    STATUS_N = Column(Integer)
-    GREEN = Column(Integer)
-    YELLOW = Column(Integer)
-    RED = Column(Integer)
-    MANCODE_V = Column(Integer)
-    
-class Btrundata(BASE, DbBase):
-    
-    __tablename__ = 'bt_rundata'
-    
-    RECORD_ID = Column(Integer, primary_key=True)
-    BTKEY_V = Column(String(255))
-    BASE_N = Column(Integer)
-    BTSERIALNO_V = Column(String(255))
-    '''for test'''
-    BTTYPEKEY_N = Column(Integer)
-    RUNTIME_D = Column(DateTime)
-    STATUS_N = Column(Integer)
-    VOL_N = Column(Float)
-    INTER_N = Column(Float)
-    CUR_ELECTRIC_N = Column(Float)
-    CUR_HL_INNER_N = Column(Float)
-    CUR_TEMPERATURE_N = Column(Integer)
-    FORCASTVOLUME_N = Column(Float)
-
-class Dictbattery(BASE, DbBase):
-    
-    __tablename__ = 'dict_battery'
-    
-    RECORD_ID = Column(Integer, primary_key=True)
-    B0 = Column(String(128))
-    B1 = Column(String(128))
-    STDINNER_V = Column(String(128))
-    YELLOWVALUE_N = Column(Float)
-    REDVALUE_N = Column(Float)
-    
-class CycleSetting(BASE, DbBase):
-    
-    __tablename__ = 'tbl_setting'
-    
-    RECORD_ID = Column(Integer, primary_key=True)
-    CYCLE_N = Column(Integer)
-    
-    
-    
-    
-        
-    
-    
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255))
+    container_id = Column(Integer)
+    account_id = Column(Integer)
+    create_time = Column(DateTime)

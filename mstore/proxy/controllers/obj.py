@@ -78,3 +78,23 @@ class ObjectController(object):
         return Response(request=req,
                 content_type='application/octet-stream',
                 app_iter = req.body)
+        
+    def GET(self, req):
+        
+        print 'get object'
+        
+        obj_path = '/var/lib/mstore/test.py'
+        
+        def file_iter(filename):
+            
+            with open(filename, 'rb') as f:
+                while True:
+                    chunk = f.read(1024)
+                    if chunk:
+                        yield chunk
+                    else:
+                        break
+                    
+        return Response(request=req,
+                        content_type='application/octec-stream',
+                        app_iter=file_iter(obj_path))
