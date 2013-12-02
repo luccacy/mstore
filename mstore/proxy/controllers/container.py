@@ -18,19 +18,4 @@ class ContainerController(object):
         self.container_name = unquote(container_name)
 
     def POST(self, req):
-        print 'container post'
-        container = self.container_name
-        base_dir = '/var/lib/mstore'
-        bucket_path = os.path.join(base_dir, container)
-        print 'mkdirs'
-        print bucket_path
-       
-        try:
-            os.mkdirs(bucket_path)
-        except:
-            print 'error'
-            
-        return 200
-
-    def hello(self):
-        print 'hello world'
+        pass
