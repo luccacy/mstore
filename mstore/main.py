@@ -26,8 +26,8 @@ from mstore import service
 
 def main():
     try:
-        deploy_service = service.serve_wsgi(service.MstoreService)
-        deploy_service.wait()
+        mstore_service = service.serve_wsgi(service.MstoreService)
+        mstore_service.wait()
     except RuntimeError, e:
         sys.exit(("ERROR: %s") % e)
 

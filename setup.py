@@ -11,7 +11,7 @@ setup(name="mstore",
       version=version,
       description='media store',
       long_description="""
-A deploy package for openstack work on centos system
+media store service
 """,
       classifiers=["Development Status :: 1 - Production/Stable",
                    "Intended Audience :: Developers",

@@ -10,10 +10,10 @@ from mstore import server
 import time
 import thread
 
-class KnightService(win32serviceutil.ServiceFramework):
+class MstoreService(win32serviceutil.ServiceFramework):
     
     _svc_name_ = "mstore service"
-    _svc_display_name_ = "battery monitor service"
+    _svc_display_name_ = "media store service"
     
     def __init__(self, args):
         win32serviceutil.ServiceFramework.__init__(self, args)
@@ -43,4 +43,4 @@ class KnightService(win32serviceutil.ServiceFramework):
 #win32event.WaitForSingleObject(self.hWaitStop, win32event.INFINITE)
 
 if __name__=='__main__':
-    win32serviceutil.HandleCommandLine(KnightService) 
+    win32serviceutil.HandleCommandLine(MstoreService) 

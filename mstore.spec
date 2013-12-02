@@ -3,7 +3,7 @@
 Name: mstore 
 Version: 0.1.0
 Release: 1%{?dist}
-Summary: deploy openstack
+Summary: media store service
 
 Group: Development/Languages
 License: BSD
