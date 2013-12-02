@@ -34,7 +34,7 @@ def main():
     cfg.CONF(args=sys.argv[1:], project='mstore')
 
     try:
-        deploy_service = service.serve_wsgi(service.DeployApiService)
+        deploy_service = service.serve_wsgi(service.MstoreService)
         deploy_service.wait()
     except RuntimeError, e:
         sys.exit(_("ERROR: %s") % e)

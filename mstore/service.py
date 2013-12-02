@@ -49,7 +49,7 @@ class WsgiService(object):
         self.wsgi_app.wait()
 
 
-class DeployApiService(WsgiService):
+class MstoreService(WsgiService):
         
     @classmethod
     def create(cls):
