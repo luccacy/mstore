@@ -26,7 +26,7 @@ from mstore.common import cfg
 
 def main():
 
-    app_name = 'proxy-server'
+    app_name = 'compute-server'
     cfg.CONF(args=sys.argv[1:], project=app_name)
 
     try:

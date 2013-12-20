@@ -36,6 +36,7 @@ from mstore.common import fileutils
 from mstore.common import cfg
 from mstore.common import logger
 from mstore.common import processutils
+from mstore.common import http
 
 from mstore.common.swob import HTTPOk, HTTPAccepted, HTTPBadRequest, HTTPNotFound, \
     HTTPPreconditionFailed, HTTPRequestEntityTooLarge, HTTPRequestTimeout, \
@@ -63,60 +64,28 @@ class ObjectController(object):
         self.account_name = unquote(account_name)
         self.container_name = unquote(container_name)
         self.object_name = unquote(object_name)
-        self.network_chunk_size = int(CONF.get('network_chunk_size', 65536))
         self.base_dir = CONF.base_dir
+        endpoint = 'http://10.12.13.16:9898'
+        kwargs1 = {'ssl_compression': True, 'cert_file': None,
+        'token':'8ba9eb7c22934f26bd21ee77e4b86a3c', 'timeout': 600, 'cacert': '', 'key_file': None, 'insecure': False}
+        self.client = http.HTTPClient(endpoint, **kwargs1)
         
     def _exec(self, *cmd, **kwargs):
         return processutils.execute(*cmd, **kwargs)
 
     def POST(self, req):
-         
-        container_path = os.path.join(self.base_dir, self.container_name)
-        object_path = os.path.join(container_path, self.object_name)
         
-        try:
-            fileutils.ensure_tree(object_path)
-            
-            #verify md5
-            #get compression
-            object_path = os.path.join(object_path, '.tar.gz')
-            #write object
-            with open(object_path, 'wb') as object_file:
-                reader = req.environ['wsgi.input'].read
-                for chunk in iter(lambda: reader(self.network_chunk_size), ''):
-                    object_file.write(chunk)
-                
-            #uncompress
-            cmd = 'tar xzf %s -C %s' % (object_path, container_path)
-            self._exec(cmd, shell=True)
-            
-            #delete compressed object
-            os.remove(object_path)
-            
-            return HTTPOk
-        
-        except:
-            raise
+        print 'proxy obj post'
+        url = "/v1/images/metadata"
+        body = {"image_meta":
+                {"status":
+                    "active", "name": "cir", "container_format": "ovf", "disk_format":
+                    "qcow2", "protected": False, "is_public":  True, "checksum":
+                    "8abc2460f14e009d13d9861f10f5efac", "size": 11141121}}
+        resp, body = self.client.json_request('POST', url, body=body)
+        print resp
+        print body
 
-        '''
-        headers={}
-        headers['Content-Type']='application/json'
-        body={'status':'ok'}
-        resp = Response(request=req, conditional_response=True,
-                status=200, body=json.dumps(body))
-        return resp
-
-        return HTTPBadRequest(request=req,content_type='text/plain',
-                body='bad')
-        return req.get_response(resp) 
-        return Response(request=req,
-                content_type='application/json',
-                body={'status':'ok'})
-        
-        return Response(request=req,
-                content_type='application/octet-stream',
-                app_iter = req.body)
-        '''
         
     def GET(self, req):
         

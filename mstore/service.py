@@ -12,12 +12,15 @@ from mstore.common import logger
 from threading import Thread, Event, Lock
 
 from mstore import router
-from mstore.proxy import server as appserver
+from mstore.proxy import server as proxy_server
+from mstore.compute import server as compute_server
 
 core_opts = [
     cfg.StrOpt('listen_addr', default='0.0.0.0',
                 help=('The mstore server listen address')),
-    cfg.StrOpt('port', default='7878',
+    cfg.StrOpt('proxy_port', default='7878',
+                help=('The mstore server listen port')),
+    cfg.StrOpt('compute_port', default='9898',
                 help=('The mstore server listen port')),
     cfg.StrOpt('paste_file', default='c://etc/mstore/api-paste.ini',
                 help=('The mstore server paste file')),
@@ -52,9 +55,7 @@ class WsgiService(object):
 class MstoreService(WsgiService):
         
     @classmethod
-    def create(cls):
-        app_name = "mstore"
-    
+    def create(cls, app_name):
         # Setup logging early, supplying both the CLI options and the
         # configuration mapping from the config file
         # We only update the conf dict for the verbose and debug
@@ -66,9 +67,9 @@ class MstoreService(WsgiService):
         return service
 
 
-def serve_wsgi(cls):
+def serve_wsgi(cls, app_name):
     try:
-        service = cls.create()
+        service = cls.create(app_name)
     except Exception:
         LOG.exception(('In WsgiService.create()'))
         raise 
@@ -79,21 +80,23 @@ def serve_wsgi(cls):
 
 def _run_wsgi(app_name):
 
-    configfile=CONF.paste_file
-    port = CONF.port
     listen_addr = CONF.listen_addr
-    appname="mstore"
- 
-    global_config = {'__file__': 'c:\\etc\\mstore\\api-paste.ini', 'here': 'c:\\etc\\mstore'}
-    local_config = {'version': '1.0.0'}
+    global_config = {}
+    local_config = {}
+    
     #app = router.APIRouter.factory(global_config, **local_config)
-    app = appserver.app_factory(global_config, **local_config)
-
+    if app_name == 'proxy-server':
+        app = proxy_server.app_factory(global_config, **local_config)
+        port = CONF.proxy_port
+    elif app_name == 'compute-server':
+        app = compute_server.app_factory(global_config, **local_config)
+        port = CONF.compute_port
+        
     if not app:
         LOG.error(('No known API applications configured.'))
         return
 
-    server = wsgi.Server(appname)    
+    server = wsgi.Server(app_name)    
     server.start(app, port, listen_addr)
     LOG.info('start server')
 
