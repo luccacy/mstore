@@ -25,9 +25,8 @@ class Runner(object):
         else:
             self._id = str(uuid)
 
-    @property
     def uuid(self):
-        return "r-%s" % (self._id)
+        return (self._id)
 
     def reset(self):
         self.result = None

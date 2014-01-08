@@ -3,7 +3,7 @@ import json
 
 #glance api
 
-endpoint = 'http://10.12.13.16:8888'
+endpoint = 'http://10.12.13.16:7878'
 kwargs = {'ssl_compression': True, 'cert_file': None,
         'token':'8ba9eb7c22934f26bd21ee77e4b86a3c', 'timeout': 600, 'cacert': '', 'key_file': None, 'insecure': False}
 client = http.HTTPClient(endpoint, **kwargs)
@@ -47,6 +47,19 @@ print resp
 print body
 '''
 
+#test for get data
+url = "1/2/3/4"
+resp, body = client.raw_request('GET', url)
+print resp
+print body
+
+file = 'new.py'
+image = open(file, 'wb')
+for chunk in body:
+    image.write(chunk)
+image.close()
+
+
 #download image 
 '''
 url = "/v2/images/17910877-f1ce-4b91-a303-b6bdc2da64b5/file"
@@ -60,6 +73,7 @@ image.close()
 '''
 
 #upload image
+'''
 headers={}
 headers['Transfer-Encoding']='chunked'
 url="1/2/test1/cirros.img"
@@ -73,7 +87,7 @@ image = open(file, 'wb')
 for chunk in body:
     image.write(chunk)
 image.close()
-
+'''
 #upload image
 '''
 headers={}

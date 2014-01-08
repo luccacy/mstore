@@ -1,5 +1,6 @@
 from mstore.common import logger
 
+from eventlet import Timeout
 
 LOG = logger.get_logger(__name__)
 
@@ -37,3 +38,15 @@ class Duplicate(BaseException):
       
 class SensorNotFound(BaseException):
     message = 'sensor not found'  
+    
+    
+class ChunkReadTimeout(Timeout):
+    pass
+
+
+class ChunkWriteTimeout(Timeout):
+    pass
+
+
+class ConnectionTimeout(Timeout):
+    pass

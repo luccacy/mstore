@@ -9,7 +9,17 @@ import prettytable
 
 from mstore.common import exc
 from mstore.common import importutils
+from eventlet import GreenPool, sleep, Timeout, tpool
 
+class ContextPool(GreenPool):
+    "GreenPool subclassed to kill its coros when it gets gc'ed"
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        for coro in list(self.coroutines_running):
+            coro.kill()
 
 from ConfigParser import ConfigParser, NoSectionError, NoOptionError, \
     RawConfigParser

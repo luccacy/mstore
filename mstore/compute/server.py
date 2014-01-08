@@ -37,7 +37,11 @@ from mstore.common import fileutils
 from mstore.common import cfg
 from mstore.common import logger
 from mstore.common import processutils
+from mstore.common.utils import split_path
 from eventlet import sleep, Timeout
+from mstore.compute import taskflow
+from mstore.compute import task
+from mstore.compute import adpter
 
 from mstore.common.swob import HTTPAccepted, HTTPBadRequest, HTTPCreated, \
     HTTPInternalServerError, HTTPNoContent, HTTPNotFound, HTTPNotModified, \
@@ -63,18 +67,86 @@ class ComputeController(object):
 
     def __init__(self, conf):
         self.allowed_methods = ['DELETE', 'PUT', 'HEAD', 'GET', 'REPLICATE', 'POST']
-        pass
+        self.base_dir = '/var/lib/mstore'
+        adpter.load_all_adapters(adpter.__path__[0])
         
+    def _get_parts(self, path):
+        version, account, container, obj = split_path(path, 1, 4, True)
+        d = dict(version=version,
+                 account_name=account,
+                 container_name=container,
+                 object_name=obj)
+        return d
+    
     def _exec(self, *cmd, **kwargs):
         return processutils.execute(*cmd, **kwargs)
 
     def POST(self, req):
+        
         print 'compute post'
+        print req.body
+        
+        return Response(request=req, status=200)
+        parts = self._get_parts(req.path)
+        version = parts.get('version', None)
+        account_name = parts.get('account_name', None)
+        container_name = parts.get('container_name', None)
+        object_zip_name = parts.get('object_name', None)
+        object_name, ext_name = os.path.splitext(os.path.split(object_zip_name)[-1])
+        
+        container_dir = os.path.join(self.base_dir, container_name)
+        object_zip_path = os.path.join(container_dir, object_zip_name)
+        object_unzip_path = os.path.join(container_dir, object_name)
+        
+        
+        with open(object_zip_path, 'wb') as f:
+            for CHUNK in req.body:
+                f.write(CHUNK)
+                
+        if object_zip_path:
+            self._exec('unzip -n %s -d %s' % (object_zip_path, container_dir), shell=True)
+        
+        object_result_name = object_name + 'result'
+        object_result_path = os.path.join(container_dir, object_result_name)
+        
+        _task_flow = taskflow.TaskFlow()
+        
+        for img in os.listdir(object_unzip_path):
+            if img.endswith('jpg') or img.endswith('jpeg'):
+                img_src = os.path.join(object_unzip_path, img)
+                img_dst = os.path.join(object_result_path, img)
+                
+                _task = task.Rgb2grayTask(img_src, img_dst)
+                _task_flow.add(_task)
+                
+        _task_flow.run()
+        
         return HTTPOk(request=req)
 
-    def GET(self, req):
-        print 'GET'
-        pass
+    def PUT(self, req):
+        return Response(request = req, 
+                        status = 200,
+                        body = 'ready')
+        
+    def GET(self,req):
+        print 'get object'
+        
+        obj_path = '/var/lib/mstore/localfs.py'
+        
+        def file_iter(filename):
+            
+            with open(filename, 'rb') as f:
+                while True:
+                    chunk = f.read(1024)
+                    if chunk:
+                        yield chunk
+                    else:
+                        break
+                    
+        return Response(request=req,
+                        content_type='application/octec-stream',
+                        app_iter=file_iter(obj_path)) 
+        
         
     def __call__(self, env, start_response):
         """WSGI Application entry point for the Swift Object Server."""
